@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProctorAI — Intelligent Automated Online Examination Proctoring System</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Global Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="text-base font-extrabold tracking-tight text-white flex items-center gap-2">
+            ProctorAI <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Autonomous</span>
+          </span>
+          <p class="text-[11px] text-slate-400 hidden sm:block">Real-time Vision & Browser Integrity Engine</p>
+        </div>
+      </div>
+
+      <!-- Header actions / status -->
+      <div class="flex items-center gap-3">
+        <div id="ai-model-status-badge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hidden md:flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Initializing AI Engine...
+        </div>
+        <div class="flex items-center gap-1 bg-slate-800/80 p-1 rounded-lg border border-slate-700">
+          <button id="nav-student-portal" class="px-3 py-1 text-xs font-semibold rounded-md bg-indigo-600 text-white shadow">Candidate Test</button>
+          <button id="nav-admin-portal" class="px-3 py-1 text-xs font-semibold rounded-md text-slate-300 hover:text-white hover:bg-slate-700/60 transition">Proctor Dashboard</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- ==================== VIEW 1: LOGIN & PRE-EXAM SETUP ==================== -->
+    <section id="login-view" class="space-y-8 animate-fade-in">
+      <div class="text-center max-w-2xl mx-auto pt-2 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Secure Examination Gate</span>
+        <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight mt-3">Candidate Verification & Proctoring Setup</h1>
+        <p class="text-slate-400 text-sm mt-2">
+          Please verify your identity and hardware permissions before entering the secured assessment room.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left: Candidate Form (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold">1</span>
+                College Student Authentication
+              </h2>
+              <span id="auth-status-pill" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                🔒 Awaiting Credentials
+              </span>
+            </div>
+
+            <!-- Login Credentials Input Area -->
+            <div id="auth-input-container" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="auth-student-id" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">College Student / Roll ID *</label>
+                  <input type="text" id="auth-student-id" placeholder="e.g. MCA-2026-001" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-mono transition" required />
+                </div>
+                <div>
+                  <label for="auth-password" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Exam Password / Passkey *</label>
+                  <div class="relative">
+                    <input type="password" id="auth-password" placeholder="Enter college passkey" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm transition" required />
+                    <button type="button" id="btn-toggle-password" class="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white font-medium">Show</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Authenticate Action Button -->
+              <div class="flex items-center gap-3">
+                <button type="button" id="btn-authenticate-student" class="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                  Verify College Credentials
+                </button>
+              </div>
+
+              <!-- Interactive Demo Credentials Helper -->
+              <div class="p-3 bg-slate-950/70 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-semibold text-slate-300">
+                  <span>🎓 Pre-Registered Student Records (Click to test):</span>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                  <button type="button" class="demo-student-chip px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-indigo-600/20 hover:text-indigo-300 border border-slate-700 text-[11px] font-mono transition" data-id="MCA-2026-001" data-pass="Password@123">
+                    Alex Rivera (MCA-2026-001)
+                  </button>
+                  <button type="button" class="demo-student-chip px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-indigo-600/20 hover:text-indigo-300 border border-slate-700 text-[11px] font-mono transition" data-id="MCA-2026-002" data-pass="Student@2026">
+                    Priyanshu (MCA-2026-002)
+                  </button>
+                  <button type="button" class="demo-student-chip px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600/20 hover:text-rose-300 border border-slate-700 text-[11px] font-mono transition" data-id="MCA-2026-999" data-pass="WrongPass">
+                    Test Invalid Account ❌
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error / Alert Message Box -->
+            <div id="auth-alert-box" class="hidden mt-4 p-3.5 rounded-xl border text-xs"></div>
+
+            <!-- Verified Student Profile Card (Shown when authenticated) -->
+            <div id="auth-verified-card" class="hidden mt-4 p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/40 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">✓</span>
+                  <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Identity Authenticated by College</span>
+                </div>
+                <button type="button" id="btn-logout-student" class="text-[11px] text-slate-400 hover:text-rose-400 font-semibold underline">Change Student</button>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs pt-1">
+                <div>
+                  <span class="text-[10px] text-slate-400 uppercase block">Candidate Name</span>
+                  <span id="verified-student-name" class="font-bold text-white text-sm block truncate">Alex Rivera</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400 uppercase block">Student / Roll ID</span>
+                  <span id="verified-student-id" class="font-bold font-mono text-emerald-300 text-sm block">MCA-2026-001</span>
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                  <span class="text-[10px] text-slate-400 uppercase block">Institution</span>
+                  <span id="verified-student-college" class="font-medium text-slate-300 text-xs block truncate">ABC College / JIMS</span>
+                </div>
+              </div>
+
+              <div>
+                <label for="exam-select" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Assigned Assessment Module</label>
+                <select id="exam-select" class="w-full px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-xs transition">
+                  <option value="CS-PROCTOR-2026">CS-PROCTOR-2026: Systems Architecture & Integrity Assessment</option>
+                  <option value="AI-ENG-2026">AI-ENG-2026: Machine Learning Systems & Applied AI</option>
+                  <option value="SEC-402-2026">SEC-402-2026: Cybersecurity & Applied Cryptography</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Proctoring Agreement Pledge -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-3">
+              <span class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold">2</span>
+              Academic Integrity Pledge
+            </h2>
+            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2 mb-4 leading-relaxed">
+              <p>• <strong>Continuous Face Visibility:</strong> You must keep your face clearly visible within camera frame throughout the session. Leaving the camera will log a violation.</p>
+              <p>• <strong>Strict Solo Policy:</strong> No secondary persons are permitted. Multiple detected faces will instantly trigger a critical cheat alert.</p>
+              <p>• <strong>Window & Tab Lock:</strong> Tab switching, minimizing, or clicking outside the exam browser will be timestamped and deducted from your trust score.</p>
+              <p>• <strong>Secure Fullscreen:</strong> The exam operates in locked fullscreen mode.</p>
+            </div>
+
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" id="terms-agreement" class="mt-1 accent-indigo-500 w-4 h-4 rounded cursor-pointer" />
+              <span class="text-xs text-slate-300 font-medium leading-relaxed">
+                I hereby attest that I will take this examination unassisted, understand that my webcam and browser telemetry are actively audited, and agree to the integrity terms.
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: Hardware Diagnostics & Launch (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+              <span class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold">3</span>
+              Device Diagnostics
+            </h2>
+
+            <!-- Video Preview Container -->
+            <div class="relative aspect-video rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center">
+              <video id="diagnostic-video" autoplay playsinline muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+              <div class="face-oval-guide"></div>
+              <div class="radar-scan-line"></div>
+              <div class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur px-2 py-0.5 rounded text-[10px] text-slate-300 font-mono">
+                Face Alignment Guide
+              </div>
+            </div>
+
+            <!-- Hardware Check Button -->
+            <button id="btn-check-hardware" class="w-full mt-4 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition border border-slate-700 flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              Verify Camera & Microphone
+            </button>
+
+            <!-- Status Metrics -->
+            <div id="hardware-status-area" class="hidden mt-4 space-y-3 pt-3 border-t border-slate-800 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400">Webcam Feed:</span>
+                <span class="text-emerald-400 font-semibold flex items-center gap-1">● Online & Centered</span>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-slate-400">Microphone Sensitivity:</span>
+                  <span class="text-slate-300 font-mono text-[11px]">Active</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="audio-meter-fill" class="h-full bg-emerald-500 w-0 transition-all duration-75"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Start Exam Button -->
+            <div class="mt-6 pt-4 border-t border-slate-800">
+              <button id="btn-start-exam" disabled class="w-full py-3.5 px-4 rounded-xl bg-indigo-600 text-white font-bold text-sm tracking-wide shadow-lg opacity-50 cursor-not-allowed transition flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                Launch Proctored Exam (Fullscreen)
+              </button>
+              <p class="text-[11px] text-center text-slate-500 mt-2">
+                Clicking will switch browser to secured fullscreen proctor mode.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== VIEW 2: ACTIVE PROCTORED EXAM HUD ==================== -->
+    <section id="exam-view" class="hidden space-y-6">
+      
+      <!-- Exam Secured Top Bar -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-indigo-400 text-lg">
+            🎓
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="exam-candidate-name" class="font-bold text-white text-sm sm:text-base">Alex Rivera</span>
+              <span id="exam-candidate-id" class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">ENG-2026-904</span>
+            </div>
+            <p class="text-xs text-slate-400">CS-PROCTOR-2026: Systems Architecture & Integrity Assessment</p>
+          </div>
+        </div>
+
+        <!-- Center: Countdown Timer -->
+        <div class="flex items-center gap-2 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
+          <span class="text-xs text-slate-400 uppercase font-semibold">Remaining:</span>
+          <span id="exam-timer-display" class="font-mono text-xl font-black text-indigo-400 tracking-wider">15:00</span>
+        </div>
+
+        <!-- Right: Real-time Trust Score & Strikes -->
+        <div class="flex items-center gap-4">
+          <!-- Trust Score -->
+          <div class="flex items-center gap-2.5">
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Live Trust Score</span>
+              <span id="live-trust-score" class="text-sm font-bold text-emerald-400">100%</span>
+            </div>
+            <div class="w-16 h-2 rounded-full bg-slate-800 overflow-hidden">
+              <div id="live-trust-bar" class="h-full bg-emerald-500 w-full transition-all"></div>
+            </div>
+          </div>
+
+          <!-- Strikes Badge -->
+          <span id="warning-strike-badge" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+            Warnings: 0/5
+          </span>
+
+          <!-- Submit Button -->
+          <button id="btn-submit-exam" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl transition shadow shadow-rose-600/20">
+            Submit Exam
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Layout: Questions Area (8 cols) + AI Proctor HUD (4 cols) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Question Canvas (8 cols) -->
+        <div class="lg:col-span-8 space-y-6">
+          <!-- Question Card -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl min-h-[460px] flex flex-col justify-between">
+            
+            <!-- Dynamic Question Content -->
+            <div id="question-content-area" class="flex-1">
+              <!-- Rendered via app.js -->
+            </div>
+
+            <!-- Action Bar -->
+            <div class="pt-6 mt-6 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <button id="btn-review-question" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-semibold rounded-xl border border-slate-700 transition flex items-center gap-1.5">
+                  ⭐ Mark for Review
+                </button>
+                <button id="btn-clear-answer" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition">
+                  Clear Response
+                </button>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <button id="btn-prev-question" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition">
+                  ⟵ Previous
+                </button>
+                <button id="btn-next-question" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition shadow-md shadow-indigo-500/20">
+                  Next Question ➔
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question Palette / Quick Nav -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
+            <div class="flex items-center justify-between mb-3 text-xs text-slate-400">
+              <span class="font-semibold uppercase tracking-wider">Question Navigation Palette</span>
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500"></span> Answered</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Marked</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-700"></span> Unvisited</span>
+              </div>
+            </div>
+            <div id="question-nav-grid" class="flex flex-wrap gap-2">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI Proctor HUD (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+            
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                AI Vision Proctoring HUD
+              </h3>
+              <span class="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">LIVE STREAM</span>
+            </div>
+
+            <!-- Webcam & AI Canvas Overlay -->
+            <div class="relative aspect-video rounded-xl bg-black border border-slate-800 overflow-hidden shadow-inner">
+              <video id="exam-webcam" autoplay playsinline muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+              <canvas id="exam-overlay-canvas" class="absolute inset-0 w-full h-full pointer-events-none transform scale-x-[-1]"></canvas>
+            </div>
+
+            <!-- Live Status Telemetry Cards -->
+            <div class="space-y-2.5 pt-1 text-xs">
+              <div class="flex items-center justify-between bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">
+                <span class="text-slate-400 flex items-center gap-1.5">
+                  <span>👤</span> Face Presence
+                </span>
+                <span id="hud-face-status" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  1 Face (Verified)
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">
+                <span class="text-slate-400 flex items-center gap-1.5">
+                  <span>👁️</span> Attention / Gaze
+                </span>
+                <span id="hud-gaze-status" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                  Screen Focused
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">
+                <span class="text-slate-400 flex items-center gap-1.5">
+                  <span>🖥️</span> Window Focus
+                </span>
+                <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  Active & Locked
+                </span>
+              </div>
+
+              <div class="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-slate-400 flex items-center gap-1.5">
+                    <span>🎙️</span> Ambient Audio Level
+                  </span>
+                  <span id="hud-audio-status" class="text-[10px] text-slate-400 font-mono">Normal</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="hud-audio-bar" class="h-full bg-emerald-400 w-0 transition-all duration-75"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Defense Warning Note -->
+            <div class="p-3 bg-indigo-950/30 rounded-xl border border-indigo-500/20 text-[11px] text-indigo-300 leading-relaxed">
+              <strong>Active Security Shield:</strong> Copy/Paste, DevTools inspection, and Tab Switching are locked and actively logged to your permanent audit report.
+            </div>
+
+            <!-- Simulation & Edge-Case Testing Toolbar -->
+            <div class="p-3.5 bg-slate-950/90 rounded-xl border border-slate-800 space-y-2.5">
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span class="font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1">
+                  <span>🧪</span> Live Testing Simulator
+                </span>
+                <span class="text-[10px] text-slate-500">Quick edge-case trigger</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <button id="sim-no-face" class="px-2.5 py-1.5 bg-slate-800 hover:bg-amber-600/30 text-amber-300 rounded-lg border border-amber-500/30 transition text-left flex items-center gap-1.5 text-[11px]">
+                  <span>👤❌</span> No Face
+                </button>
+                <button id="sim-multi-face" class="px-2.5 py-1.5 bg-slate-800 hover:bg-rose-600/30 text-rose-300 rounded-lg border border-rose-500/30 transition text-left flex items-center gap-1.5 text-[11px]">
+                  <span>👥⚠️</span> 2+ Faces
+                </button>
+                <button id="sim-tab-switch" class="px-2.5 py-1.5 bg-slate-800 hover:bg-indigo-600/30 text-indigo-300 rounded-lg border border-indigo-500/30 transition text-left flex items-center gap-1.5 text-[11px]">
+                  <span>📑🔀</span> Tab Switch
+                </button>
+                <button id="sim-audio-spike" class="px-2.5 py-1.5 bg-slate-800 hover:bg-emerald-600/30 text-emerald-300 rounded-lg border border-emerald-500/30 transition text-left flex items-center gap-1.5 text-[11px]">
+                  <span>🎙️🔊</span> Audio Noise
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== VIEW 3: COMPREHENSIVE AUDIT REPORT ==================== -->
+    <section id="report-view" class="hidden">
+      <!-- Injected by ReportGenerator.renderReport() -->
+    </section>
+
+
+    <!-- ==================== VIEW 4: ADMIN / PROCTOR OVERSIGHT ==================== -->
+    <section id="admin-view" class="hidden space-y-6 animate-fade-in">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Institutional Faculty View</span>
+          <h1 class="text-2xl font-black text-white tracking-tight mt-1">Proctoring Oversight & Audit Dashboard</h1>
+          <p class="text-xs text-slate-400 mt-1">Review candidate examination sessions, integrity verdicts, and captured violation evidence.</p>
+        </div>
+        <button onclick="window.app.loadAdminSessions()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow transition">
+          🔄 Refresh Session Logs
+        </button>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Completed & Active Examinations</h2>
+        <div id="admin-sessions-list">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fullscreen Enforced Modal Overlay -->
+  <div id="fullscreen-lock-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-rose-500/50 rounded-2xl p-6 sm:p-8 text-center space-y-4 shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-2xl animate-bounce">
+        ⚠️
+      </div>
+      <h3 class="text-xl font-black text-white tracking-tight">Fullscreen Mode Required</h3>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        You have exited fullscreen examination mode! This action has been timestamped and logged as an infraction in your proctoring report.
+      </p>
+      <button id="btn-resume-fullscreen" class="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm tracking-wide shadow-lg transition">
+        Resume Fullscreen Exam
+      </button>
+    </div>
+  </div>
+
+  <!-- Real-time Alert Toast Notifications Container -->
+  <div id="alert-toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-auto">
+    <!-- Dynamic Toasts -->
+  </div>
+
+  <!-- Vendor AI Libraries (Local first with CDN fallbacks) -->
+  <script src="/vendor/tf.min.js"></script>
+  <script src="/vendor/blazeface.min.js"></script>
+
+  <!-- Application Logic Modules -->
+  <script src="/js/examQuestions.js"></script>
+  <script src="/js/detector.js"></script>
+  <script src="/js/audioMonitor.js"></script>
+  <script src="/js/securityGuard.js"></script>
+  <script src="/js/reportGenerator.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

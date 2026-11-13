@@ -1,0 +1,18 @@
+
+# Dependencies
+node_modules/
+
+# Private session data
+data/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
