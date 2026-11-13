@@ -6,16 +6,16 @@ Built with **Node.js, Express, TensorFlow.js BlazeFace Computer Vision, and the 
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-### 1. 🔐 Candidate Onboarding & Verification
+### 1. Candidate Onboarding & Verification
 - **Candidate Authentication**: Full Name, Student/Roll ID, Institutional Email, Assessment selection.
 - **Pre-Exam Diagnostic Station**:
   - Live webcam preview with face positioning oval guide.
   - Live microphone test with acoustic visualizer meter.
   - System requirement checks & academic pledge agreement.
 
-### 2. 🤖 Real-Time AI Computer Vision Detection
+### 2. Real-Time AI Computer Vision Detection
 - **No Face Detection**:
   - Detects if candidate steps away from desk, blocks camera, or disappears.
   - Automatically raises high-priority violation if face absent for >2.5s.
@@ -28,7 +28,7 @@ Built with **Node.js, Express, TensorFlow.js BlazeFace Computer Vision, and the 
   - Real-time facial landmark analysis (eyes, nose, ears) calculating head yaw/pitch angles.
   - Flags when candidate looks away from screen for prolonged periods.
 
-### 3. 🛡️ Browser Security & Anti-Cheat Telemetry
+### 3. Browser Security & Anti-Cheat Telemetry
 - **Tab Switching Detection**:
   - `document.visibilitychange` tracking: Records exact departure time, return time, and total seconds spent away.
 - **Window Focus Loss (`blur`)**:
@@ -40,27 +40,27 @@ Built with **Node.js, Express, TensorFlow.js BlazeFace Computer Vision, and the 
 - **Acoustic Speech & Noise Spikes**:
   - Web Audio API `AudioContext` and `AnalyserNode` monitoring sustained background whispering or talking.
 
-### 4. 📊 Comprehensive Post-Exam Proctoring Report
+### 4. Comprehensive Post-Exam Proctoring Report
 - **Candidate Dossier**: Name, ID, exam subject, session ID, start/finish times, and duration.
 - **Dynamic Trust & Integrity Gauge**:
   - Visual circular score dial (0–100%) calculated from weighted infraction points.
   - Status Verdict Badge:
-    - 🟢 **HIGH INTEGRITY (VERIFIED)**: ≥80%
-    - 🟡 **NEEDS REVIEW (SUSPICIOUS)**: 50–79%
-    - 🔴 **HIGH RISK / DISQUALIFIED**: <50% or severe repeated infractions.
+    - **HIGH INTEGRITY (VERIFIED)**: ≥80%
+    - **NEEDS REVIEW (SUSPICIOUS)**: 50–79%
+    - **HIGH RISK / DISQUALIFIED**: <50% or severe repeated infractions.
 - **Categorized Infraction Summary**: Counts and cumulative durations for No-Face, Multiple-Faces, Tab Switches, Fullscreen Exits, and Audio Spikes.
 - **Visual Evidence Snapshot Gallery**: High-resolution snapshots captured at the exact moment of each violation with watermarked timestamps.
 - **Chronological Audit Trail**: Full ledger of every system event with severity, duration, and notes.
 - **Export Options**:
-  - 🖨️ One-click **Print / Save as PDF** with printer-friendly styling.
-  - 💾 **Download JSON Audit Trail** for tamper-evident archival.
+  - One-click **Print / Save as PDF** with printer-friendly styling.
+  - **Download JSON Audit Trail** for tamper-evident archival.
 
-### 5. 👨‍🏫 Proctor / Admin Oversight Dashboard
+### 5. Proctor / Admin Oversight Dashboard
 - Review all completed candidate sessions, search student records, inspect verdicts, and review snapshot evidence.
 
 ---
 
-## 🛠️ Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -97,7 +97,7 @@ http://localhost:3000
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 \`\`\`
 proctor-ai/
